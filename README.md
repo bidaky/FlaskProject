@@ -1,4 +1,5 @@
-###Simple Flask API
+# Simple Flask API
+ 
 python 3.8.*, venv + requirements.txt 
 
 Для використання проекту потрібно інсталювати __Flask__ і WSGI-сервер __Waitress__, та використовувати версію python3
