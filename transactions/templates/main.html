@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    database:
+        {%for i in users%}
+            <p>id: {{i.id}}</p>
+            <p>firstname: {{i.firstname}}</p>
+            <p>lastname: {{i.lastname}}</p>
+            <p>email: {{i.email}}</p>
+            <p>password: {{i.password}}</p>
+            <p>wallet_id: {{i.wallet_id}}</p>
+        {%endfor%}
+<br><br>
+        {%for i in wallets%}
+            <p>id: {{i.id}}</p>
+            <p>sum_of_money: {{i.sum_of_money}}</p>
+            <p>wallet.user: {{i.user}}</p>
+        {%endfor%}
+</body>
+</html>
