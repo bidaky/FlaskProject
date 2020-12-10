@@ -5,15 +5,16 @@ from .models import *
 
 @app.route('/', methods=['GET', 'POST'])
 def start():
-    db.drop_all()
+    # db.drop_all()
     # db.create_all()
-    # db.session.add(User(firstname='taras', lastname='vilinskyi', email='123', password='1', wallet_id=1, token_id=1))
+    # db.session.add(Token(id=1, token='fejqr_ej_fe_rekbj23_2'))
+    # db.session.add(User(id=1, firstname='taras', lastname='vilinskyi', email='123', password='1', token_id=1))
     # db.session.add(User(firstname='taras', lastname='vilinskyi', email='1223', password='2', wallet_id=1, token_id=2))
     # db.session.add(Wallet(sum_of_money=123.5, transactions_id=1))
     # db.session.add(Transactions(sender_id=1, receiver_id=2, sum=51, completed=False))
-    # db.session.add(Token(token='fejqr_ej_fe_rekbj23_2'))
-    # db.session.add(Token(token='fejqswqr_ej_fe_rekbj23_2'))
 
+    # db.session.add(Token(token='fejqswqr_ej_fe_rekbj23_2'))
+    #
     # db.session.add(Wallet(sum_of_money=123.5))
     # db.session.add(Wallet(sum_of_money=123.5))
 

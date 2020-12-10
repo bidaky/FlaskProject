@@ -6,11 +6,11 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     firstname = db.Column(db.String(50), nullable=False)
     lastname = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(30), nullable=False)
     password = db.Column(db.String(50), nullable=False)
 
     # this will be the id of wallet the user have
-    wallet_id = db.Column(db.Integer, db.ForeignKey('wallet.id', ondelete="cascade"), nullable=False)
+    wallet_id = db.Column(db.Integer, db.ForeignKey('wallet.id', ondelete="cascade"), nullable=True)
     # when we've got the wallet we can simply use this 'user' attribute to know which user this wallet is
     wallet = db.relationship('Wallet', cascade="all, delete", backref=db.backref('user', lazy=True))
 
@@ -26,7 +26,7 @@ class Wallet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sum_of_money = db.Column(db.Float, nullable=False)
 
-    transactions_id = db.Column(db.Integer, db.ForeignKey('transactions.id', ondelete="cascade"), nullable=False, unique=True)
+    transactions_id = db.Column(db.Integer, db.ForeignKey('transactions.id', ondelete="cascade"), nullable=True, unique=True)
     transactions = db.relationship('Transactions', cascade="all, delete", backref=db.backref('wallet', lazy=True))
 
     def __repr__(self):
@@ -48,4 +48,7 @@ class Transactions(db.Model):
 
 class Token(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    token = db.Column(db.String(1024), nullable=False)
+    token = db.Column(db.String(1024), nullable=False, unique=True)
+
+    def __repr__(self):
+        return f"Token(id: '{self.id}', token: '{self.token}')"
