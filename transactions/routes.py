@@ -23,6 +23,54 @@ def start():
     # return "User was added to db"
 
 
+@app.route('/authentication',methods=['POST'])
+def auth():
+    pass
+
+@app.route('/user',methods=['POST'])
+def createUser():
+    return 'User created'
+
+
+@app.route('/user/<username>',methods=['GET'])
+def getUserByName(username):
+    return 'User got'
+
+
+@app.route('/user/<username>',methods=['PUT'])
+def updateUser(username):
+    return 'User updated'
+
+
+@app.route('/user/<username>',methods=['DELETE'])
+def deleteUser(username):
+    return 'User deleted'
+
+@app.route('/wallets',methods=['POST'])
+def addnewWallet():
+    return 'Wallet added'
+
+@app.route('/wallets/<userId>',methods=['GET'])
+def getWalletbuUserId(userId):
+    return 'Wallet got!'
+
+@app.route('/wallets/<walletId>',methods=['PUT'])
+def updateWallte(walletId):
+    return 'Wallet add!'
+
+@app.route('/wallets/<walletId>',methods=['DELETE'])
+def deleteWallet(walletId):
+    return 'Wallet deleted!'
+
+@app.route('/wallets/<id_sender>/<id_receiver>/transactions',methods=['POST'])
+def sendMoney(id_sender,id_receiver):
+    return 'Money sent!'
+
+@app.route('/transactions/<transaction_id>',methods=['GET'])
+def getTransactionbyId(transaction_id):
+    return 'Transaction got!'
+
+
 @app.route('/api/v1/hello-world-1', methods=['GET'])
 def greeting():
     # return "Hello World 1"
