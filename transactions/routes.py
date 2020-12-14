@@ -1,72 +1,140 @@
-from transactions import app, db
-from flask import render_template, redirect, url_for, request
+from flask import render_template,abort,jsonify,request
+from transactions import app,bcrypt,ma
 from .models import *
+import json
+import re
 
+
+user_schema = UserSchema()
+user_schemas = UserSchema(many=True)
+wallet_schema = WalletSchema()
+wallet_schemas = WalletSchema(many=True)
+
+transaction_schema = TransactionSchema()
+transaction_schemas = TransactionSchema(many=True)
+
+token_schema = TokenSchema()
+token_schemas = TokenSchema(many=True)
 
 @app.route('/', methods=['GET', 'POST'])
 def start():
-    # db.drop_all()
-    # db.create_all()
-    # db.session.add(Token(id=1, token='fejqr_ej_fe_rekbj23_2'))
-    # db.session.add(User(id=1, firstname='taras', lastname='vilinskyi', email='123', password='1', token_id=1))
-    # db.session.add(User(firstname='taras', lastname='vilinskyi', email='1223', password='2', wallet_id=1, token_id=2))
-    # db.session.add(Wallet(sum_of_money=123.5, transactions_id=1))
-    # db.session.add(Transactions(sender_id=1, receiver_id=2, sum=51, completed=False))
-
-    # db.session.add(Token(token='fejqswqr_ej_fe_rekbj23_2'))
-    #
-    # db.session.add(Wallet(sum_of_money=123.5))
-    # db.session.add(Wallet(sum_of_money=123.5))
-
-    # db.session.commit()
     return render_template('home.html')
-    # return "User was added to db"
 
 
-@app.route('/authentication',methods=['POST'])
+@app.route('/authentication', methods=['POST'])
 def auth():
     pass
 
-@app.route('/user',methods=['POST'])
+#WORKING
+@app.route('/user', methods=['POST'])
 def createUser():
-    return 'User created'
+    formCopy = json.loads(json.dumps(request.form))
+    if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$',formCopy['email']):
+        abort(400,'Wrong email supplied')
+    if User.query.filter_by(email=formCopy['email']).first() is not None:  # if user is already registered
+        abort(403,'User with same address exists')
+    else:
+        try:
+            new_password = bcrypt.generate_password_hash(formCopy['password'])
+            new_token = Token(token=formCopy['email'])
+            token_data = token_schema.dump(new_token)
+            db.session.add(new_token)
+            db.session.commit()
+            token_id = len(Token.query.all())
+            new = User(firstname=formCopy['firstname'],lastname=formCopy['lastname'],email=formCopy['email'],password = new_password,token_id = token_id)
+            temp = UserSchema.dump(new)
+            UserSchema.load(temp)
+            db.session.add(new)
+            db.session.commit()
+        except ValidationError as err:
+            return err.messages,405
+    return 'User created',201
+
+#WORKING
+@app.route('/user/<string:email>', methods=['GET'])
+def getUserByEmail(email):
+    if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$',email):
+        abort(400,'Wrong email supplied')
+    try:
+        rez = User.query.filter_by(email=email).first()
+        return jsonify(rez.__repr__())
+    except:
+        abort(404,'User not found')
 
 
-@app.route('/user/<username>',methods=['GET'])
-def getUserByName(username):
-    return 'User got'
+@app.route('/user/<string:email>', methods=['PUT'])
+def updateUser(email):
+    formCopy = json.loads ( json.dumps ( request.form ) )
+    if not re.search ( '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', formCopy['email'] ):
+        abort ( 400, 'Wrong email supplied')
+    if User.query.filter_by(email=formCopy['email']).first() is None:  # if user is already registered
+        abort(404,'User with that address not found')
+    else:
+        new_token = Token(token=formCopy['email'])
+        db.session.add(new_token)
+        db.session.commit()
+        token_id = len(Token.query.all())
+        new = User(firstname=formCopy['firstname'],lastname=formCopy['lastname'],email=formCopy['email'],password=formCopy['password'],token_id=token_id)
+        db.session.add(new)
+        db.session.commit()
+    return 'User created',201
 
 
-@app.route('/user/<username>',methods=['PUT'])
-def updateUser(username):
-    return 'User updated'
-
-
-@app.route('/user/<username>',methods=['DELETE'])
-def deleteUser(username):
+@app.route('/user/<string:email>', methods=['DELETE'])
+def deleteUser(email):
     return 'User deleted'
 
-@app.route('/wallets',methods=['POST'])
+
+@app.route('/wallets', methods=['POST'])
 def addnewWallet():
     return 'Wallet added'
 
-@app.route('/wallets/<userId>',methods=['GET'])
-def getWalletbuUserId(userId):
-    return 'Wallet got!'
 
-@app.route('/wallets/<walletId>',methods=['PUT'])
+@app.route('/wallets/<int:userId>', methods=['GET'])
+def getWalletbuUserId(userId):
+    try:
+        try:
+            user = User.query.filter_by(id=id).first()
+            user = user.__repr__(1)
+        except:
+            abort(404,'User not found')
+        rez = Wallet.query.filter_by(id=user['id']).first()
+        print(id,rez)
+        return jsonify(rez.__repr__())
+    except:
+        abort(403,'User has not wallet')
+
+
+
+@app.route('/wallets/<int:walletId>', methods=['GET'])
+def getWalletbyId(walletId):
+    try:
+        rez = Wallet.query.filter_by(id=walletId).first()
+        print(id,rez)
+        return jsonify(rez.__repr__())
+    except:
+        abort(404,'Wallet not found!')
+
+@app.route('/wallets/<int:walletId>', methods=['PUT'])
 def updateWallte(walletId):
     return 'Wallet add!'
 
-@app.route('/wallets/<walletId>',methods=['DELETE'])
+
+@app.route('/wallets/<int:walletId>', methods=['DELETE'])
 def deleteWallet(walletId):
+    try:
+        Wallet.query.filter_by(id=walletId).delete()
+    except:
+        abort(404,'Wallet not found')
     return 'Wallet deleted!'
 
-@app.route('/wallets/<id_sender>/<id_receiver>/transactions',methods=['POST'])
-def sendMoney(id_sender,id_receiver):
+
+@app.route('/wallets/<id_sender>/<id_receiver>/transactions', methods=['POST'])
+def sendMoney(id_sender, id_receiver):
     return 'Money sent!'
 
-@app.route('/transactions/<transaction_id>',methods=['GET'])
+
+@app.route('/transactions/<transaction_id>', methods=['GET'])
 def getTransactionbyId(transaction_id):
     return 'Transaction got!'
 
