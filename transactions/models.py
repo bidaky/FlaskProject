@@ -24,11 +24,11 @@ class User(db.Model):
 
 
 class UserSchema(ma.Schema):
-    id=fields.Integer(allow_none=False)
-    firstname=fields.Str(validate=validate.Length(min=1, max=50))
-    lastname=fields.Str(validate=validate.Length(min=1, max=50))
-    email=fields.Str(validate=validate.Length(min=1, max=30))
-    password=fields.Str(validate=validate.Length(min=1, max=50))
+    id=fields.Integer(allow_none=True)
+    firstname=fields.Str(validate=validate.Length(min=1, max=70))
+    lastname=fields.Str(validate=validate.Length(min=1, max=70))
+    email=fields.Str(validate=validate.Length(min=1, max=70))
+    password=fields.Str(validate=validate.Length(min=1, max=70))
     token_id=fields.Integer(allow_none=False)
     class Meta:
         model = User
@@ -40,10 +40,10 @@ class Wallet(db.Model):
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
 
     def __repr__(self):
-        return f"Wallet('id: {self.id}', sum_of_money: '{self.sum_of_money}')"
+        return f"Wallet('id: {self.id}', sum_of_money: '{self.sum_of_money}',owner_id: {self.user_id})"
 
 class WalletSchema(ma.Schema):
-    id = fields.Integer(allow_none=False)
+    id = fields.Integer(allow_none=True)
     sum_of_money = fields.Integer(allow_none=False)
     user_id = fields.Integer(allow_none=False)
     class Meta:
@@ -63,7 +63,7 @@ class Transactions(db.Model):
                f"sum: '{self.sum}', transaction_date: '{self.transaction_date}', complete: '{self.completed}')"
 
 class TransactionSchema(ma.Schema):
-    id = fields.Integer(allow_none=False)
+    id = fields.Integer(allow_none=True)
     sender_id = fields.Integer(allow_none=False)
     receiver_id = fields.Integer(allow_none=False)
     sum = fields.Integer(allow_none=False)
@@ -82,7 +82,7 @@ class Token(db.Model):
         return f"Token(id: '{self.id}', token: '{self.token}')"
 
 class TokenSchema(ma.Schema):
-    id = fields.Integer(allow_none=False)
+    id = fields.Integer(allow_none=True)
     token = fields.Str(validate=validate.Length(min=1, max=1024))
     class Meta:
         model = Token
