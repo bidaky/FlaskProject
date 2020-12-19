@@ -1,6 +1,7 @@
 from flask import render_template, abort, jsonify, request
 from transactions import app, bcrypt, ma
 from .models import *
+from .models import TransactionSchema
 import json
 import re
 
@@ -117,6 +118,7 @@ def addnewWallet(userId):
     try:
         new=Wallet(user_id=userId, sum_of_money=100)
         temp=wallet_schema.dump(new)
+        wallet_schema.load(temp)
         db.session.add(new)
         db.session.commit()
     except ValidationError as err:
@@ -124,21 +126,21 @@ def addnewWallet(userId):
     return 'Wallet added', 201
 
 
-# Getting all user wallets
+# Getting all user wallets WORKING
 @app.route('/wallets/<string:email>', methods=['GET'])
-def getWalletbyUserId(email):
+def getWalletbyUserEmail(email):
+    if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
+        abort(400, 'Wrong email supplied')
     try:
+        user = None
         try:
-            user=User.query.filter_by(email=email).all()
-            print(user['id'])
-            return "Found"
+            user=User.query.filter_by(email=email).first()
         except:
             abort(404, 'User not found')
-        rez=Wallet.query.filter_by(id=user['id']).first()
+        rez=Wallet.query.filter_by(user_id=user.id).all()
         return jsonify(rez.__repr__( ))
     except:
         abort(403, 'User has not wallet')
-
 
 
 #Getting wallet by walletId WORKING
@@ -170,8 +172,24 @@ def deleteWallet(walletId):
     return 'Wallet deleted!'
 
 
-@app.route('/wallets/<id_sender>/<id_receiver>/transactions', methods=['POST'])
-def sendMoney(id_sender, id_receiver):
+@app.route('/wallets/<int:id_sender_wallet>/<int:id_receiver_wallet>/<int:sum>', methods=['POST'])
+def sendMoney(id_sender_wallet, id_receiver_wallet, sum):
+    senderWallet = Wallet.query.filter_by(id=id_sender_wallet).first()
+    receiverWallet = Wallet.query.filter_by(id=id_receiver_wallet).first()
+    if senderWallet==None or receiverWallet==None:
+        abort(404,'Wallet id of receiver or sender not found')
+    if senderWallet.sum_of_money<sum:
+        abort(403, "Sender hasn't enough money to send")
+    try:
+        new_transaction = Transactions()
+        temp = transaction_schema.dump(new_transaction)
+        transaction_schema.loads(temp)
+        db.session.add(new_transaction)
+        Wallet.query.filter_by(id=id_sender_wallet).update({'sum_of_money':senderWallet.sum_of_money-sum})
+        Wallet.query.filter_by(id=id_receiver_wallet).update({'sum_of_money':receiverWallet.sum_of_money+sum})
+        db.session.commit()
+    except ValidationError as err:
+        return err.messages, 405
     return 'Money sent!'
 
 
