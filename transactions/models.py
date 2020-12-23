@@ -11,7 +11,7 @@ class User(db.Model):
     password = db.Column(db.String(50), nullable=False)
 
     # this will be the id of wallet the user have
-    #wallet_id = db.Column(db.Integer, db.ForeignKey('wallet.id', ondelete="cascade"), nullable=True)
+    wallet_id = db.Column(db.Integer, db.ForeignKey('wallet.id', ondelete="cascade"), nullable=True)
     # when we've got the wallet we can simply use this 'user' attribute to know which user this wallet is
     #wallet = db.relationship('Wallet', cascade="all, delete", backref=db.backref('user', lazy=True))
 
