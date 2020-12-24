@@ -12,8 +12,6 @@ wallet_schema=WalletSchema()
 wallet_schemas=WalletSchema(many=True)
 transaction_schema=TransactionSchema()
 transaction_schemas=TransactionSchema(many=True)
-token_schema=TokenSchema()
-token_schemas=TokenSchema(many=True)
 
 
 # MAIN ROUTE
@@ -38,17 +36,11 @@ def createUser():
     else:
         try:
             new_password=bcrypt.generate_password_hash(formCopy['password']).__str__( )[3:]
-            new_token=bcrypt.generate_password_hash(formCopy['email']).__str__( )[3:]
-            new_token=Token(token=formCopy['email'])
-            token_data = token_schema.dump(new_token)
-            token_schema.load(token_data)
-            db.session.add(new_token)
-            db.session.commit()
-            token_id = len(Token.query.all())
             new=User(firstname=formCopy['firstname'], lastname=formCopy['lastname'], email=formCopy['email'],
-                     password=new_password, token_id=token_id)
+                     password=formCopy['password'])
             temp=user_schema.dump(new)
             user_schema.load(data=temp)
+            new.password = new_password
             db.session.add(new)
             db.session.commit()
         except ValidationError as err:
@@ -79,15 +71,15 @@ def updateUser(email):
     else:
         try:
             oldUser = User.query.filter_by(email=email).first()
-            newLastName = oldUser.lastname if formCopy['lastname'] == None else formCopy['lastname']
-            newFirstName = oldUser.firstname if formCopy['firstname'] == None else formCopy['firstname']
-            newPassword = oldUser.password if formCopy['password'] == None else bcrypt.generate_password_hash(formCopy['password']).__str__()[3:]
+            newLastName = oldUser.lastname if formCopy['lastname'] is None else formCopy['lastname']
+            newFirstName = oldUser.firstname if formCopy['firstname'] is None else formCopy['firstname']
+            newPassword = oldUser.password if formCopy['password'] is None else bcrypt.generate_password_hash(formCopy['password']).__str__( )[3:]
             oldUser.firstname = newFirstName
             oldUser.lastname = newLastName
             oldUser.password = formCopy['password']
             temp=user_schema.dump(oldUser)
             user_schema.load(data=temp)
-            rez=User.query.filter_by(id=oldUser.id).update({'lastname': oldUser.lastname,'firstname':oldUser.firstname,'password':oldUser.password})
+            User.query.filter_by(id=oldUser.id).update({'lastname': oldUser.lastname,'firstname':oldUser.firstname,'password':newPassword})
             db.session.commit()
         except ValidationError as err:
             return err.messages, 405
@@ -102,10 +94,11 @@ def deleteUser(email):
     if User.query.filter_by(email=email).first( ) is None:  # if user is not registered
         abort(404, 'User with that address not found')
     try:
-        userToDelete = User.query.filter_by(email=email).first( )
-        print(userToDelete)
+        userToDelete = User.query.filter_by(email=email).first()
+        walletToDelete = Wallet.query.filter_by(user_id = userToDelete.id).delete(synchronize_session=False)
         db.session.delete(userToDelete)
-        db.session.commit( )
+        #db.session.delete(walletToDelete)
+        db.session.commit()
     except:
         abort(404, 'User not found')
     return 'User deleted', 200
@@ -115,7 +108,7 @@ def deleteUser(email):
 @app.route('/wallets/<int:userId>', methods=['POST'])
 def addnewWallet(userId):
     formCopy = json.loads(json.dumps(request.form))
-    if User.query.filter_by(id=userId).first( ) is None:
+    if User.query.filter_by(id=userId).first() is None:
         abort(404, 'User with that id not found')
     try:
         new = Wallet(user_id=userId, sum_of_money=100)
@@ -136,10 +129,10 @@ def getWalletbyUserEmail(email):
     try:
         user=None
         try:
-            user=User.query.filter_by(email=email).first( )
+            user=User.query.filter_by(email=email).first()
         except:
             abort(404, 'User not found')
-        rez=Wallet.query.filter_by(user_id=user.id).all( )
+        rez=Wallet.query.filter_by(user_id=user.id).all()
         return jsonify(rez.__repr__( ))
     except:
         abort(403, 'User has not wallet')
@@ -149,8 +142,8 @@ def getWalletbyUserEmail(email):
 @app.route('/wallets/<int:walletId>', methods=['GET'])
 def getWalletbyId(walletId):
     try:
-        rez=Wallet.query.filter_by(id=walletId).first( )
-        return jsonify(rez.__repr__( ))
+        rez=Wallet.query.filter_by(id=walletId).first()
+        return jsonify(rez.__repr__())
     except:
         abort(404, 'Wallet not found!')
 
@@ -161,7 +154,7 @@ def updateWallet(walletId, sum):
     if sum < 0:
         abort(403, 'Forbidden to decrease number')
     try:
-        walletBefore=Wallet.query.filter_by(id=walletId).first( )
+        walletBefore=Wallet.query.filter_by(id=walletId).first()
         walletBefore.sum_of_money+=sum
         rez=Wallet.query.filter_by(id=walletBefore.id).update({'sum_of_money': walletBefore.sum_of_money})
         db.session.commit()
@@ -174,10 +167,10 @@ def updateWallet(walletId, sum):
 @app.route('/wallets/<int:walletId>', methods=['DELETE'])
 def deleteWallet(walletId):
     try:
-        walletToDelete=Wallet.query.filter_by(id=walletId).first( )
+        walletToDelete=Wallet.query.filter_by(id=walletId).first()
         print("Wallet to delete", walletToDelete)
         db.session.delete(walletToDelete)
-        db.session.commit( )
+        db.session.commit()
     except:
         abort(404, 'Wallet not found')
     return 'Wallet deleted!'
@@ -210,7 +203,7 @@ def sendMoney(id_sender_wallet, id_receiver_wallet, sum):
 def getTransactionbyId(transaction_id):
     try:
         rez=Transactions.query.filter_by(id=transaction_id).first( )
-        return jsonify(rez.__repr__( ))
+        return jsonify(rez.__repr__())
     except:
         abort(404, 'Transaction not found!')
 
