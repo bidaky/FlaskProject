@@ -12,11 +12,21 @@ from functools import wraps
 def check_for_token(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
-        token=request.args.get('token')
+        token=request.headers.get('token')
         if not token:
             return jsonify({'message': 'Missing token'}), 403
         try:
             data=jwt.decode(token, app.config['SECRET_KEY'])
+            if kwargs['email'] is not None:
+                if kwargs['email']!=data['email']:
+                    abort(403,'Forbidden')
+            if kwargs['userId'] is not None:
+                if data['id']!=kwargs['id']:
+                    abort(403,'Forbidden')
+            if kwargs['walletId'] is not None:
+                wallet = Wallet.query.filter_by(id=kwargs['walletId']).first()
+                if wallet.user_id!= data['id']:
+                    abort(403,'Forbidden')
         except:
             return jsonify({'message': 'Invalid token'}), 403
         return func(*args,**kwargs)
@@ -47,6 +57,8 @@ def auth():
     else:
         session['logged'] = True
         token = jwt.encode({
+            'id':user.id,
+            'email':formCopy['email'],
             'exp': datetime.datetime.utcnow()+datetime.timedelta(hours = 1)
         },app.config['SECRET_KEY'])
         return jsonify({'token':token.decode('utf-8')})
@@ -171,7 +183,6 @@ def getWalletbyUserEmail(email):
 
 # GETTING WALLET INFO BY ID,WORKING
 @app.route('/wallets/<int:walletId>', methods=['GET'])
-@check_for_token
 def getWalletbyId(walletId):
     try:
         rez=Wallet.query.filter_by(id=walletId).first( )
@@ -197,7 +208,6 @@ def updateWallet(walletId, sum):
 
 # DELETING WALLET, WORKING
 @app.route('/wallets/<int:walletId>', methods=['DELETE'])
-@check_for_token
 def deleteWallet(walletId):
     try:
         walletToDelete=Wallet.query.filter_by(id=walletId).first( )
@@ -211,7 +221,6 @@ def deleteWallet(walletId):
 
 # SENDING MONEY, WORKING
 @app.route('/wallets/<int:id_sender_wallet>/<int:id_receiver_wallet>/<int:sum>', methods=['POST'])
-@check_for_token
 def sendMoney(id_sender_wallet, id_receiver_wallet, sum):
     senderWallet=Wallet.query.filter_by(id=id_sender_wallet).first( )
     receiverWallet=Wallet.query.filter_by(id=id_receiver_wallet).first( )
