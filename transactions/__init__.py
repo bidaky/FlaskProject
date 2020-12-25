@@ -9,6 +9,8 @@ app = Flask(__name__, template_folder='templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:pgnulp@127.0.0.1/bidaky'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'Lab9'
+
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)

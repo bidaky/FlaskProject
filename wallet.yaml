@@ -163,13 +163,21 @@ paths:
           content: {}   
       security:
         - ApiKeyAuth: []
-  /wallets:
+  /wallets/{userId}:
     post:
       tags:
       - wallets
       summary: create wallet
       description: auth users 
       operationId: addnewWallet
+      parameters:
+        - name: userId
+          in: path
+          description: all wallet by userId
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         description: create wallet
         content:
@@ -188,7 +196,6 @@ paths:
           content: {}   
       security:
         - ApiKeyAuth: []
-  '/wallets/{userId}':
     get:
       tags:
         - wallets

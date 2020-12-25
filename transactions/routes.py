@@ -36,7 +36,8 @@ transaction_schemas=TransactionSchema(many=True)
 def start():
     return render_template('home.html')
 
-'''
+
+#Authing user
 @app.route('/authentification', methods=['POST'])
 def auth():
     formCopy = json.loads(json.dumps(request.form))
@@ -46,11 +47,10 @@ def auth():
     else:
         session['logged'] = True
         token = jwt.encode({
-            'token': datetime.datetime.utcnow()+datetime.timedelta(seconds=600)
+            'exp': datetime.datetime.utcnow()+datetime.timedelta(hours = 1)
         },app.config['SECRET_KEY'])
         return jsonify({'token':token.decode('utf-8')})
 
-'''
 
 # CREATING USER WORKING
 @app.route('/user', methods=['POST'])
@@ -76,7 +76,7 @@ def createUser():
 
 # GETTING USER BY EMAIL,WORKING
 @app.route('/user/<string:email>', methods=['GET'])
-#@check_for_token
+@check_for_token
 def getUserByEmail(email):
     if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
         abort(400, 'Wrong email supplied')
@@ -87,8 +87,9 @@ def getUserByEmail(email):
         abort(404, 'User not found')
 
 
+#Updating user
 @app.route('/user/<string:email>', methods=['PUT'])
-#@check_for_token
+@check_for_token
 def updateUser(email):
     formCopy=json.loads(json.dumps(request.form))
     if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', formCopy['email']):
@@ -114,9 +115,9 @@ def updateUser(email):
     return 'User updated', 201
 
 
-# DELETING USERS, WORKING
+#DELETING USERS, WORKING
 @app.route('/user/<string:email>', methods=['DELETE'])
-#@check_for_token
+@check_for_token
 def deleteUser(email):
     if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
         abort(400, 'Wrong email supplied')
@@ -134,7 +135,7 @@ def deleteUser(email):
 
 # CRESTING WALLET, WORKING
 @app.route('/wallets/<int:userId>', methods=['POST'])
-#@check_for_token
+@check_for_token
 def addnewWallet(userId):
     formCopy=json.loads(json.dumps(request.form))
     if User.query.filter_by(id=userId).first( ) is None:
@@ -152,7 +153,7 @@ def addnewWallet(userId):
 
 # GETTING USER BY ID,WORKING
 @app.route('/wallets/<string:email>', methods=['GET'])
-#@check_for_token
+@check_for_token
 def getWalletbyUserEmail(email):
     if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
         abort(400, 'Wrong email supplied')
@@ -170,7 +171,7 @@ def getWalletbyUserEmail(email):
 
 # GETTING WALLET INFO BY ID,WORKING
 @app.route('/wallets/<int:walletId>', methods=['GET'])
-#@check_for_token
+@check_for_token
 def getWalletbyId(walletId):
     try:
         rez=Wallet.query.filter_by(id=walletId).first( )
@@ -196,7 +197,7 @@ def updateWallet(walletId, sum):
 
 # DELETING WALLET, WORKING
 @app.route('/wallets/<int:walletId>', methods=['DELETE'])
-#@check_for_token
+@check_for_token
 def deleteWallet(walletId):
     try:
         walletToDelete=Wallet.query.filter_by(id=walletId).first( )
@@ -210,7 +211,7 @@ def deleteWallet(walletId):
 
 # SENDING MONEY, WORKING
 @app.route('/wallets/<int:id_sender_wallet>/<int:id_receiver_wallet>/<int:sum>', methods=['POST'])
-#@check_for_token
+@check_for_token
 def sendMoney(id_sender_wallet, id_receiver_wallet, sum):
     senderWallet=Wallet.query.filter_by(id=id_sender_wallet).first( )
     receiverWallet=Wallet.query.filter_by(id=id_receiver_wallet).first( )
@@ -233,7 +234,7 @@ def sendMoney(id_sender_wallet, id_receiver_wallet, sum):
 
 # GETTING TRANSACTION INFO, WORKING
 @app.route('/transactions/<transaction_id>', methods=['GET'])
-#@check_for_token
+@check_for_token
 def getTransactionbyId(transaction_id):
     try:
         rez=Transactions.query.filter_by(id=transaction_id).first( )
