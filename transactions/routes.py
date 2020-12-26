@@ -17,13 +17,13 @@ def check_for_token(func):
             return jsonify({'message': 'Missing token'}), 403
         try:
             data=jwt.decode(token, app.config['SECRET_KEY'])
-            if kwargs['email'] is not None:
+            if kwargs.get('email') is not None:
                 if kwargs['email']!=data['email']:
                     abort(403,'Forbidden')
-            if kwargs['userId'] is not None:
+            if kwargs.get('userId') is not None:
                 if data['id']!=kwargs['id']:
                     abort(403,'Forbidden')
-            if kwargs['walletId'] is not None:
+            if kwargs.get('walletId') is not None:
                 wallet = Wallet.query.filter_by(id=kwargs['walletId']).first()
                 if wallet.user_id!= data['id']:
                     abort(403,'Forbidden')
