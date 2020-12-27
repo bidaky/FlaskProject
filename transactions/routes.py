@@ -93,8 +93,8 @@ def createUser():
 @app.route('/user/<string:email>', methods=['GET'])
 @check_for_token
 def getUserByEmail(email):
-    if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
-        abort(400, 'Wrong email supplied')
+    # if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
+    #     abort(400, 'Wrong email supplied')
     try:
         rez = User.query.filter_by(email=email).first()
         return jsonify(rez.__repr__())
@@ -107,8 +107,8 @@ def getUserByEmail(email):
 @check_for_token
 def updateUser(email):
     formCopy = json.loads(json.dumps(request.form))
-    if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', formCopy['email']):
-        abort(400, 'Wrong email supplied')
+    # if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', formCopy['email']):
+    #     abort(400, 'Wrong email supplied')
     if User.query.filter_by(email=formCopy['email']).first() is None:  # if user is already registered
         abort(404, 'User with that address not found')
     else:
@@ -135,8 +135,8 @@ def updateUser(email):
 @app.route('/user/<string:email>', methods=['DELETE'])
 @check_for_token
 def deleteUser(email):
-    if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
-        abort(400, 'Wrong email supplied')
+    # if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
+    #     abort(403, 'Wrong email supplied')
     if User.query.filter_by(email=email).first() is None:  # if user is not registered
         abort(404, 'User with that address not found')
     try:
@@ -171,8 +171,8 @@ def addnewWallet(userId):
 @app.route('/wallets/<string:email>', methods=['GET'])
 @check_for_token
 def getWalletbyUserEmail(email):
-    if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
-        abort(400, 'Wrong email supplied')
+    # if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
+    #     abort(400, 'Wrong email supplied')
     try:
         user = None
         try:

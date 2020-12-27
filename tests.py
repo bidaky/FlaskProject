@@ -29,10 +29,10 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(headers['Content-Type'], response.headers['content-type'])
 
     def test_create_user(self):
-        firstname = "test_user2"
-        lastname = "lastname_test2"
-        email = "test2@test.com"
-        password = "test_pass2"
+        # firstname = "test_user2"
+        # lastname = "lastname_test2"
+        # email = "test2@test.com"
+        # password = "test_pass2"
 
         # user_data = json.dumps({
         #     "firstname": firstname,
@@ -46,18 +46,31 @@ class BasicTests(unittest.TestCase):
         response = self._app.post('/user', headers={"Content-Type": "multipart/form-data"},
                                   data={"firstname": "test_user2", "lastname": "lastname_test2",
                                         "email": "test2@test.com", "password": "test_pass2"})
-        print(response.status_code)
-        print(User.query.all())
+        # print(User.query.all())
         self.assertEqual(is_user, response.status_code)
 
-    def test_auth(self):
-        email = "test2@test.com"
-        password = "test_pass2"
+    def test_create_user_wrong_email(self):
+        response = self._app.post('/user', headers={"Content-Type": "multipart/form-data"},
+                                  data={"firstname": "test_user2", "lastname": "lastname_test2",
+                                        "email": "I-AM-WRONG", "password": "test_pass2"})
+        print(response)
+        self.assertEqual(400, response.status_code)
 
-        user_data = json.dumps({
-            "email": email,
-            "password": password
-        })
+    def test_create_user_wrong_data(self):
+        response = self._app.post('/user', headers={"Content-Type": "multipart/form-data"},
+                                  data={"firstname": "", "lastname": "",
+                                        "email": "validation@error.test", "password": "1234567"})
+        self.assertEqual(405, response.status_code)
+
+    def test_auth(self):
+        self.test_create_user()
+        # email = "test2@test.com"
+        # password = "test_pass2"
+        #
+        # user_data = json.dumps({
+        #     "email": email,
+        #     "password": password
+        # })
 
         response = self._app.post('/authentification', headers={"Content-Type": "multipart/form-data"},
                                   data={"email": "test2@test.com", "password": "test_pass2"})
@@ -65,30 +78,28 @@ class BasicTests(unittest.TestCase):
         bytes_response = response.data.decode('utf-8').replace("'", '"')
         self.bytes_to_json_token = json.loads(bytes_response)['token']
 
-    def test_print_token(self):
-        pass
-        # self.test_auth()
+    def test_auth_wrong_pass(self):
+        response = self._app.post('/authentification', headers={"Content-Type": "multipart/form-data"},
+                                  data={"email": "test2@test.com", "password": "WRONG-PASSWORD"})
+        self.assertEqual(response.status_code, 403)
 
     def test_auth_get_user(self):
         self.test_auth()
-        res = User.query.filter_by(email='test2@test.com').first()
-        # print(res)
-        # print(self.bytes_to_json_token)
         response = self._app.get('/user/test2@test.com', headers={"token": self.bytes_to_json_token})  # or 403 forb
         self.assertEqual(response.status_code, 200)
 
-    # without auth
-    def test_get_user(self):
-        # res = User.query.filter_by(email='test2@test.com').first()
+    def test_no_auth_get_user(self):
         response = self._app.get('/user/test2@test.com', headers={"token": self.bytes_to_json_token})
         self.assertEqual(response.status_code, 403)
 
     def test_delete_user(self):
         self.test_auth()
         response = self._app.delete('/user/test2@test.com', headers={"token": self.bytes_to_json_token})
-        print("user was deleted")
         print(response.status_code)
         # self.assertEqual(response.status_code, 200)
+
+    def test_create_wallet(self):
+        pass
 
 
 if __name__ == "__main__":
