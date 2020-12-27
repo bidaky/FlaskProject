@@ -140,10 +140,18 @@ class BasicTests(unittest.TestCase):
         print(bytes_response[1:-2])
         self.assertEqual(bytes_response[1:-2], str(res))
 
+    def test_get_wallet_wrong_data(self):
+        response = self._app.get('/wallets/999')
+        self.assertEqual(404, response.status_code)
+
     def test_delete_wallet(self):
-        wallet_to_delete = Wallet.query.filter_by(id=1).first()
+        self.test_create_wallet()
         response = self._app.delete('/wallets/1')
-        self.assertEqual(200 if wallet_to_delete is not None else 404, response.status_code)
+        self.assertEqual(200, response.status_code)
+
+    def test_delete_wallet_wrong_data(self):
+        response = self._app.delete('/wallets/999')
+        self.assertEqual(404, response.status_code)
 
 
 if __name__ == "__main__":
