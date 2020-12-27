@@ -41,15 +41,14 @@ class BasicTests(unittest.TestCase):
         #     "password": password
         # })
         # print(user_data)
+
+        is_user = 403 if User.query.filter_by(email='test2@test.com').first() else 201
         response = self._app.post('/user', headers={"Content-Type": "multipart/form-data"},
                                   data={"firstname": "test_user2", "lastname": "lastname_test2",
                                         "email": "test2@test.com", "password": "test_pass2"})
-        print(response)
+        print(response.status_code)
         print(User.query.all())
-        if not User.query.filter_by(email='test2@test.com').first:
-            self.assertEqual(201, response.status_code)
-        else:
-            self.assertEqual(403, response.status_code)
+        self.assertEqual(is_user, response.status_code)
 
     def test_auth(self):
         email = "test2@test.com"
