@@ -32,7 +32,7 @@ class Wallet(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f"Wallet('id: {self.id}', sum_of_money: '{self.sum_of_money}',owner_id: {self.user_id})"
+        return f"Wallet('id: {self.id}', sum_of_money: '{self.sum_of_money}', owner_id: {self.user_id})"
 
 
 class WalletSchema(ma.Schema):

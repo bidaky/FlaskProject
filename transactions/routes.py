@@ -135,15 +135,15 @@ def updateUser(email):
 def deleteUser(email):
     # if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
     #     abort(403, 'Wrong email supplied')
-    if User.query.filter_by(email=email).first() is None:  # if user is not registered
-        abort(404, 'User with that address not found')
+    # if User.query.filter_by(email=email).first() is None:  # if user is not registered
+    #     abort(404, 'User with that address not found')
     userToDelete = User.query.filter_by(email=email).first()
     if userToDelete is not None:
         Wallet.query.filter_by(user_id=userToDelete.id).delete(synchronize_session=False)
         db.session.delete(userToDelete)
         db.session.commit()
-    else:
-        abort(404, 'User not found')
+    # else:
+    #     abort(404, 'User not found')
     return 'User deleted', 200
 
 
@@ -155,7 +155,7 @@ def addnewWallet(userId):
     if User.query.filter_by(id=userId).first() is None:
         abort(404, 'User with that id not found')
     try:
-        new = Wallet(user_id=userId, sum_of_money=100)
+        new = Wallet(user_id=userId, sum_of_money=formCopy['sum_of_money'])
         temp = wallet_schema.dump(new)
         wallet_schema.load(temp)
         db.session.add(new)
@@ -186,10 +186,10 @@ def getWalletbyUserEmail(email):
 # GETTING WALLET INFO BY ID,WORKING
 @app.route('/wallets/<int:walletId>', methods=['GET'])
 def getWalletbyId(walletId):
-    try:
-        rez = Wallet.query.filter_by(id=walletId).first()
+    rez = Wallet.query.filter_by(id=walletId).first()
+    if rez is not None:
         return jsonify(rez.__repr__())
-    except:
+    else:
         abort(404, 'Wallet not found!')
 
 

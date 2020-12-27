@@ -53,7 +53,7 @@ class BasicTests(unittest.TestCase):
         response = self._app.post('/user', headers={"Content-Type": "multipart/form-data"},
                                   data={"firstname": "test_user2", "lastname": "lastname_test2",
                                         "email": "I-AM-WRONG", "password": "test_pass2"})
-        print(response)
+        # print(response)
         self.assertEqual(400, response.status_code)
 
     def test_create_user_wrong_data(self):
@@ -115,15 +115,30 @@ class BasicTests(unittest.TestCase):
 
     def test_create_wallet(self):
         self.test_auth()
-        response = self._app.post('/wallets/4', headers={"token": self.bytes_to_json_token})
-        print(response.status_code)
-        self.assertEqual(response.status_code, 201)
+        u = User.query.filter_by(id=4).first()
+
+        response = self._app.post('/wallets/4',
+                                  headers={"Content-Type": "multipart/form-data", "token": self.bytes_to_json_token},
+                                  data={"sum_of_money": 111})
+        self.assertEqual(201 if u is not None else 404, response.status_code)
 
     def test_create_wallet_wrong_data(self):
         self.test_auth()
         response = self._app.post('/wallets/None', headers={"token": self.bytes_to_json_token})
         print(response.status_code)
         self.assertEqual(response.status_code, 405)
+
+    def test_get_wallet(self):
+        self.test_create_user()
+        self.test_create_wallet()
+
+        res = Wallet.query.filter_by(id=1).first()
+        response = self._app.get('/wallets/1')
+
+        print(str(res))
+        bytes_response = response.data.decode('utf-8')
+        print(bytes_response[1:-2])
+        self.assertEqual(bytes_response[1:-2], str(res))
 
     def test_delete_wallet(self):
         wallet_to_delete = Wallet.query.filter_by(id=1).first()
