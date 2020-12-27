@@ -95,11 +95,19 @@ class BasicTests(unittest.TestCase):
     def test_delete_user(self):
         self.test_auth()
         response = self._app.delete('/user/test2@test.com', headers={"token": self.bytes_to_json_token})
-        print(response.status_code)
-        # self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_create_wallet(self):
-        pass
+        self.test_auth()
+        response = self._app.post('/wallets/4', headers={"token": self.bytes_to_json_token})
+        print(response.status_code)
+        self.assertEqual(response.status_code, 201)
+
+    def test_create_wallet_wrong_data(self):
+        self.test_auth()
+        response = self._app.post('/wallets/None', headers={"token": self.bytes_to_json_token})
+        print(response.status_code)
+        self.assertEqual(response.status_code, 405)
 
 
 if __name__ == "__main__":

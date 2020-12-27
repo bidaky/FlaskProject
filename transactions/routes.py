@@ -21,11 +21,11 @@ def check_for_token(func):
                 if kwargs['email'] != data['email']:
                     abort(403, 'Forbidden')
             if kwargs.get('userId') is not None:
-                if data['id'] != kwargs['id']:
+                if data['id'] != kwargs['userId']:
                     abort(403, 'Forbidden')
             if kwargs.get('walletId') is not None:
                 wallet = Wallet.query.filter_by(id=kwargs['walletId']).first()
-                if wallet.user_id != data['id']:
+                if wallet.user_id != data['walletId']:
                     abort(403, 'Forbidden')
         except:
             return jsonify({'message': 'Invalid token'}), 403
@@ -95,11 +95,9 @@ def createUser():
 def getUserByEmail(email):
     # if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
     #     abort(400, 'Wrong email supplied')
-    try:
-        rez = User.query.filter_by(email=email).first()
+    rez = User.query.filter_by(email=email).first()
+    if rez is not None:
         return jsonify(rez.__repr__())
-    except:
-        abort(404, 'User not found')
 
 
 # Updating user
