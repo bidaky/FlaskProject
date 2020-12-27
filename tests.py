@@ -62,6 +62,22 @@ class BasicTests(unittest.TestCase):
                                         "email": "validation@error.test", "password": "1234567"})
         self.assertEqual(405, response.status_code)
 
+    def test_user_update(self):
+        self.test_auth()
+        response = self._app.put('/user/test2@test.com',
+                                 headers={"Content-Type": "multipart/form-data", "token": self.bytes_to_json_token},
+                                 data={"firstname": "updated test_user2", "lastname": "updated lastname_test2",
+                                       "email": "test2@test.com", "password": "test_pass2"})
+        self.assertEqual(201, response.status_code)
+
+    def test_user_update_wrong_data(self):
+        self.test_auth()
+        response = self._app.put('/user/test2@test.com',
+                                 headers={"Content-Type": "multipart/form-data", "token": self.bytes_to_json_token},
+                                 data={"firstname": "", "lastname": "",
+                                       "email": "test2@test.com", "password": "1234567"})
+        self.assertEqual(405, response.status_code)
+
     def test_auth(self):
         self.test_create_user()
         # email = "test2@test.com"
@@ -108,6 +124,11 @@ class BasicTests(unittest.TestCase):
         response = self._app.post('/wallets/None', headers={"token": self.bytes_to_json_token})
         print(response.status_code)
         self.assertEqual(response.status_code, 405)
+
+    def test_delete_wallet(self):
+        wallet_to_delete = Wallet.query.filter_by(id=1).first()
+        response = self._app.delete('/wallets/1')
+        self.assertEqual(200 if wallet_to_delete is not None else 404, response.status_code)
 
 
 if __name__ == "__main__":

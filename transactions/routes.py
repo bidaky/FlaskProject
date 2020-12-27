@@ -107,25 +107,25 @@ def updateUser(email):
     formCopy = json.loads(json.dumps(request.form))
     # if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', formCopy['email']):
     #     abort(400, 'Wrong email supplied')
-    if User.query.filter_by(email=formCopy['email']).first() is None:  # if user is already registered
-        abort(404, 'User with that address not found')
-    else:
-        try:
-            oldUser = User.query.filter_by(email=email).first()
-            newLastName = oldUser.lastname if formCopy['lastname'] is None else formCopy['lastname']
-            newFirstName = oldUser.firstname if formCopy['firstname'] is None else formCopy['firstname']
-            newPassword = oldUser.password if formCopy['password'] is None else bcrypt.generate_password_hash(
-                formCopy['password']).decode()
-            oldUser.firstname = newFirstName
-            oldUser.lastname = newLastName
-            oldUser.password = formCopy['password']
-            temp = user_schema.dump(oldUser)
-            user_schema.load(data=temp)
-            User.query.filter_by(id=oldUser.id).update(
-                {'lastname': oldUser.lastname, 'firstname': oldUser.firstname, 'password': newPassword})
-            db.session.commit()
-        except ValidationError as err:
-            return err.messages, 405
+    # if User.query.filter_by(email=formCopy['email']).first() is None:
+    #     abort(404, 'User with that address not found')
+    # else:
+    try:
+        oldUser = User.query.filter_by(email=email).first()
+        newLastName = oldUser.lastname if formCopy['lastname'] is None else formCopy['lastname']
+        newFirstName = oldUser.firstname if formCopy['firstname'] is None else formCopy['firstname']
+        newPassword = oldUser.password if formCopy['password'] is None else bcrypt.generate_password_hash(
+            formCopy['password']).decode()
+        oldUser.firstname = newFirstName
+        oldUser.lastname = newLastName
+        oldUser.password = formCopy['password']
+        temp = user_schema.dump(oldUser)
+        user_schema.load(data=temp)
+        User.query.filter_by(id=oldUser.id).update(
+            {'lastname': oldUser.lastname, 'firstname': oldUser.firstname, 'password': newPassword})
+        db.session.commit()
+    except ValidationError as err:
+        return err.messages, 405
     return 'User updated', 201
 
 
@@ -137,12 +137,12 @@ def deleteUser(email):
     #     abort(403, 'Wrong email supplied')
     if User.query.filter_by(email=email).first() is None:  # if user is not registered
         abort(404, 'User with that address not found')
-    try:
-        userToDelete = User.query.filter_by(email=email).first()
+    userToDelete = User.query.filter_by(email=email).first()
+    if userToDelete is not None:
         Wallet.query.filter_by(user_id=userToDelete.id).delete(synchronize_session=False)
         db.session.delete(userToDelete)
         db.session.commit()
-    except:
+    else:
         abort(404, 'User not found')
     return 'User deleted', 200
 
@@ -211,14 +211,14 @@ def updateWallet(walletId, sum):
 # DELETING WALLET, WORKING
 @app.route('/wallets/<int:walletId>', methods=['DELETE'])
 def deleteWallet(walletId):
-    try:
-        walletToDelete = Wallet.query.filter_by(id=walletId).first()
-        print("Wallet to delete", walletToDelete)
+    walletToDelete = Wallet.query.filter_by(id=walletId).first()
+    if walletToDelete is not None:
+        # print("Wallet to delete", walletToDelete)
         db.session.delete(walletToDelete)
         db.session.commit()
-    except:
+    else:
         abort(404, 'Wallet not found')
-    return 'Wallet deleted!'
+    return 'Wallet deleted!', 200
 
 
 # SENDING MONEY, WORKING
