@@ -167,20 +167,17 @@ def addnewWallet(userId):
 
 # GETTING USER BY ID,WORKING
 @app.route('/wallets/<string:email>', methods=['GET'])
-@check_for_token
+# @check_for_token
 def getWalletbyUserEmail(email):
-    # if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
-    #     abort(400, 'Wrong email supplied')
-    try:
-        user = None
-        try:
-            user = User.query.filter_by(email=email).first()
-        except:
-            abort(404, 'User not found')
-        rez = Wallet.query.filter_by(user_id=user.id).all()
-        return jsonify(rez.__repr__())
-    except:
-        abort(403, 'User has not wallet')
+    if not re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$', email):
+        abort(400, 'Wrong email supplied')
+    user = User.query.filter_by(email=email).first()
+    print(User.query.all())
+    if user is None:
+        abort(404, 'User not found')
+
+    rez = Wallet.query.filter_by(user_id=user.id).all()
+    return jsonify(rez.__repr__())
 
 
 # GETTING WALLET INFO BY ID,WORKING

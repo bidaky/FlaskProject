@@ -144,6 +144,29 @@ class BasicTests(unittest.TestCase):
         response = self._app.get('/wallets/999')
         self.assertEqual(404, response.status_code)
 
+    def test_get_wallet_by_email(self):
+        self.test_auth()
+        response = self._app.get('/wallets/test2@test.com',
+                                 headers={"Content-Type": "multipart/form-data", "token": self.bytes_to_json_token})
+        # print(response.data)
+        user = User.query.filter_by(email='test2@test.com').first()
+
+        wallet = Wallet.query.filter_by(user_id=user.id).first()
+        print(str(wallet))
+        bytes_response = response.data.decode('utf-8')
+        print(bytes_response[2:-3])
+        self.assertEqual(bytes_response[2:-3], str(wallet))
+
+    def test_get_wallet_wrong_email(self):
+        response = self._app.get('/wallets/validation@error.com',
+                                 headers={"Content-Type": "multipart/form-data"})
+        self.assertEqual(404, response.status_code)
+
+    def test_get_wallet_ivalid_email(self):
+        response = self._app.get('/wallets/i-am-wrong',
+                                 headers={"Content-Type": "multipart/form-data"})
+        self.assertEqual(400, response.status_code)
+
     def test_update_wallet(self):
         response = self._app.put('/wallets/1/900')
         self.assertEqual(200, response.status_code)
