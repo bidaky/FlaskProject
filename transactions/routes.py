@@ -63,6 +63,7 @@ def auth():
             'email': formCopy['email'],
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
         }, app.config['SECRET_KEY'])
+        # print(token.decode('utf-8'))
         return jsonify({'token': token.decode('utf-8')})
 
 
