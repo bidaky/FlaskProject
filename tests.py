@@ -144,6 +144,14 @@ class BasicTests(unittest.TestCase):
         response = self._app.get('/wallets/999')
         self.assertEqual(404, response.status_code)
 
+    def test_update_wallet(self):
+        response = self._app.put('/wallets/1/900')
+        self.assertEqual(200, response.status_code)
+
+    def test_update_wallet_wrong_data(self):
+        response = self._app.put('/wallets/999/999')
+        self.assertEqual(404, response.status_code)
+
     def test_delete_wallet(self):
         self.test_create_wallet()
         response = self._app.delete('/wallets/1')

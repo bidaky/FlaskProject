@@ -196,15 +196,16 @@ def getWalletbyId(walletId):
 # ADDING MONEY TO THE WALLET, WORKING
 @app.route('/wallets/<int:walletId>/<int:sum>', methods=['PUT'])
 def updateWallet(walletId, sum):
-    if sum < 0:
-        abort(403, 'Forbidden to decrease number')
-    try:
-        walletBefore = Wallet.query.filter_by(id=walletId).first()
+    # if sum < 0: # signed int is not available
+    #     abort(403, 'Forbidden to decrease number')
+    # try:
+    walletBefore = Wallet.query.filter_by(id=walletId).first()
+    if walletBefore is not None:
         walletBefore.sum_of_money += sum
         rez = Wallet.query.filter_by(id=walletBefore.id).update({'sum_of_money': walletBefore.sum_of_money})
         db.session.commit()
         return 'OK', 200
-    except:
+    else:
         abort(404, 'Wallet not found!')
 
 
