@@ -257,8 +257,8 @@ def getTransactionbyId(transaction_id):
 
 @app.route('/api/v1/hello-world-1', methods=['GET'])
 def greeting():
-    # return "Hello World 1"
-    return render_template('main.html', users=User.query.all(), wallets=Wallet.query.all())
+    return "Hello World 1"
+    # return render_template('main.html', users=User.query.all(), wallets=Wallet.query.all())
 
 # from app import app
 # from transactions import db

@@ -20,13 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0688fd0e-e9ba-4392-8106-5dde5d5a7781" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/MyFlaskProject.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MyFlaskProject.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transactions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/transactions/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transactions/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/transactions/templates/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transactions/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/transactions/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/transactions/test.db" beforeDir="false" afterPath="$PROJECT_DIR$/transactions/test.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -202,7 +198,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1604242651556</updated>
-      <workItem from="1609016770837" duration="7100000" />
+      <workItem from="1609016770837" duration="10340000" />
     </task>
     <servers />
   </component>
@@ -239,26 +235,26 @@
     </state>
     <state x="507" y="212" key="FileChooserDialogImpl/0.0.1440.900@0.0.1440.900" timestamp="1607591661366" />
     <state x="592" y="240" key="FileChooserDialogImpl/0.0.1680.1020@0.0.1680.1020" timestamp="1609017612790" />
-    <state width="1637" height="381" key="GridCell.Tab.0.bottom" timestamp="1609023953060">
+    <state width="1637" height="271" key="GridCell.Tab.0.bottom" timestamp="1609027219769">
       <screen x="0" y="0" width="1680" height="1020" />
     </state>
     <state width="1328" height="265" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1604263595100" />
-    <state width="1637" height="381" key="GridCell.Tab.0.bottom/0.0.1680.1020@0.0.1680.1020" timestamp="1609023953060" />
-    <state width="1637" height="381" key="GridCell.Tab.0.center" timestamp="1609023953060">
+    <state width="1637" height="271" key="GridCell.Tab.0.bottom/0.0.1680.1020@0.0.1680.1020" timestamp="1609027219769" />
+    <state width="1637" height="271" key="GridCell.Tab.0.center" timestamp="1609027219769">
       <screen x="0" y="0" width="1680" height="1020" />
     </state>
     <state width="1328" height="265" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1604263595100" />
-    <state width="1637" height="381" key="GridCell.Tab.0.center/0.0.1680.1020@0.0.1680.1020" timestamp="1609023953060" />
-    <state width="1637" height="381" key="GridCell.Tab.0.left" timestamp="1609023953060">
+    <state width="1637" height="271" key="GridCell.Tab.0.center/0.0.1680.1020@0.0.1680.1020" timestamp="1609027219769" />
+    <state width="1637" height="271" key="GridCell.Tab.0.left" timestamp="1609027219769">
       <screen x="0" y="0" width="1680" height="1020" />
     </state>
     <state width="1328" height="265" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1604263595100" />
-    <state width="1637" height="381" key="GridCell.Tab.0.left/0.0.1680.1020@0.0.1680.1020" timestamp="1609023953060" />
-    <state width="1637" height="381" key="GridCell.Tab.0.right" timestamp="1609023953060">
+    <state width="1637" height="271" key="GridCell.Tab.0.left/0.0.1680.1020@0.0.1680.1020" timestamp="1609027219769" />
+    <state width="1637" height="271" key="GridCell.Tab.0.right" timestamp="1609027219769">
       <screen x="0" y="0" width="1680" height="1020" />
     </state>
     <state width="1328" height="265" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1604263595100" />
-    <state width="1637" height="381" key="GridCell.Tab.0.right/0.0.1680.1020@0.0.1680.1020" timestamp="1609023953060" />
+    <state width="1637" height="271" key="GridCell.Tab.0.right/0.0.1680.1020@0.0.1680.1020" timestamp="1609027219769" />
     <state width="1637" height="340" key="GridCell.Tab.1.bottom" timestamp="1609019434937">
       <screen x="0" y="0" width="1680" height="1020" />
     </state>
@@ -286,7 +282,7 @@
     <SUITE FILE_PATH="coverage/FlaskProject$Unittests_for_tests_BasicTests_test_root.coverage" NAME="Unittests for tests Coverage Results" MODIFIED="1609022096114" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FlaskProject$app.coverage" NAME="app Coverage Results" MODIFIED="1609017620664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FlaskProject$Unittests_for_tests_TestCase.coverage" NAME="Unittests for tests.TestCase Coverage Results" MODIFIED="1609021230713" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FlaskProject$Unittests_in_tests_py.coverage" NAME="Unittests in tests.py Coverage Results" MODIFIED="1609023953046" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FlaskProject$Unittests_in_tests_py.coverage" NAME="Unittests in tests.py Coverage Results" MODIFIED="1609027219755" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FlaskProject$Unittests_for_tests_BasicTests.coverage" NAME="Unittests for tests.BasicTests Coverage Results" MODIFIED="1609022220989" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FlaskProject$Unittests_in_create_user_test_py.coverage" NAME="Unittests in create_user_test.py Coverage Results" MODIFIED="1609021919171" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
