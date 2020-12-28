@@ -198,6 +198,24 @@ class BasicTests(unittest.TestCase):
         response = self._app.delete('/wallets/999')
         self.assertEqual(404, response.status_code)
 
+    def test_send_money(self):
+        self.test_auth()
+        self.test_create_wallet()
+        response = self._app.post('/wallets/1/2/123', headers={"token": self.bytes_to_json_token})
+        # self.assertEqual(404, response.status_code)
+
+    def test_send_money_wrong_wallet(self):
+        self.test_auth()
+        self.test_create_wallet()
+        response = self._app.post('/wallets/999/999/50', headers={"token": self.bytes_to_json_token})
+        self.assertEqual(404, response.status_code)
+
+    def test_send_invalid_sum_money(self):
+        self.test_auth()
+        self.test_create_wallet()
+        response = self._app.post('/wallets/1/2/999999', headers={"token": self.bytes_to_json_token})
+        self.assertEqual(403, response.status_code)
+
 
 if __name__ == "__main__":
     unittest.main()
