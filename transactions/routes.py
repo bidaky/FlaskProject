@@ -246,10 +246,10 @@ def sendMoney(id_sender_wallet, id_receiver_wallet, sum):
 @app.route('/transactions/<transaction_id>', methods=['GET'])
 @check_for_token
 def getTransactionbyId(transaction_id):
-    try:
-        rez = Transactions.query.filter_by(id=transaction_id).first()
+    rez = Transactions.query.filter_by(id=transaction_id).first()
+    if rez is not None:
         return jsonify(rez.__repr__())
-    except:
+    else:
         abort(404, 'Transaction not found!')
 
 

@@ -218,6 +218,14 @@ class BasicTests(unittest.TestCase):
         response = self._app.post('/wallets/1/2/999999', headers={"token": self.bytes_to_json_token})
         self.assertEqual(403, response.status_code)
 
+    def test_get_transaction(self):
+        self.test_auth()
+        response = self._app.get('/transactions/1', headers={"token": self.bytes_to_json_token})
+
+        res = Transactions.query.filter_by(id=1).first()
+        bytes_response = response.data.decode('utf-8')
+        self.assertEqual(bytes_response[1:-2], str(res))
+
 
 if __name__ == "__main__":
     unittest.main()
