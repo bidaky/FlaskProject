@@ -22,3 +22,12 @@ pip install waitress
 waitress-serve --port=5000 app:app
 ```
 Перехід за посиланням http://localhost:5000/api/v1/hello-world-1 видасть текст "Hello World 1"  з HTTP статус кодом відповіді '200'
+
+Для того щоб сформувати звіт про відсоток покриття тестуванням необхідно виконати 
+```
+coverage run --omit venv/* tests.py
+```
+Щоб отримати звіт
+```
+coverage report
+```
