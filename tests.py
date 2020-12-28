@@ -226,6 +226,11 @@ class BasicTests(unittest.TestCase):
         bytes_response = response.data.decode('utf-8')
         self.assertEqual(bytes_response[1:-2], str(res))
 
+    def test_get_transaction_wrong_id(self):
+        self.test_auth()
+        response = self._app.get('/transactions/999', headers={"token": self.bytes_to_json_token})
+        self.assertEqual(404, response.status_code)
+
 
 if __name__ == "__main__":
     unittest.main()
