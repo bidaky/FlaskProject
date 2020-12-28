@@ -228,17 +228,18 @@ def sendMoney(id_sender_wallet, id_receiver_wallet, sum):
         abort(404, 'Wallet id of receiver or sender not found')
     if senderWallet.sum_of_money < sum:
         abort(403, "Sender hasn't enough money to send")
-    try:
-        new_transaction = Transactions()
-        temp = transaction_schema.dump(new_transaction)
-        transaction_schema.loads(temp)
-        db.session.add(new_transaction)
-        Wallet.query.filter_by(id=id_sender_wallet).update({'sum_of_money': senderWallet.sum_of_money - sum})
-        Wallet.query.filter_by(id=id_receiver_wallet).update({'sum_of_money': receiverWallet.sum_of_money + sum})
-        db.session.commit()
-    except ValidationError as err:
-        return err.messages, 405
-    return 'Money sent!'
+    new = Transactions(sender_id=id_sender_wallet,
+                       receiver_id=id_receiver_wallet,
+                       sum=sum,
+                       completed=True
+                       )
+    temp = transaction_schema.dump(new)
+    transaction_schema.load(temp)
+    db.session.add(new)
+    Wallet.query.filter_by(id=id_sender_wallet).update({'sum_of_money': senderWallet.sum_of_money - sum})
+    Wallet.query.filter_by(id=id_receiver_wallet).update({'sum_of_money': receiverWallet.sum_of_money + sum})
+    db.session.commit()
+    return 'Money sent!', 200
 
 
 # GETTING TRANSACTION INFO, WORKING

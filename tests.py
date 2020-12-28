@@ -201,8 +201,10 @@ class BasicTests(unittest.TestCase):
     def test_send_money(self):
         self.test_auth()
         self.test_create_wallet()
-        response = self._app.post('/wallets/1/2/123', headers={"token": self.bytes_to_json_token})
-        # self.assertEqual(404, response.status_code)
+
+        response = self._app.post('/wallets/1/2/49', headers={"token": self.bytes_to_json_token})
+        print(response)
+        self.assertEqual(200, response.status_code)
 
     def test_send_money_wrong_wallet(self):
         self.test_auth()

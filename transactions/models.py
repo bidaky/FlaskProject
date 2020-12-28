@@ -71,7 +71,7 @@ class TransactionSchema(ma.Schema):
     sender_id = fields.Integer(allow_none=False)
     receiver_id = fields.Integer(allow_none=False)
     sum = fields.Integer(allow_none=False)
-    transaction_date = fields.DateTime()
+    transaction_date = fields.DateTime(allow_none=True)
     completed = fields.Boolean()
 
     class Meta:
