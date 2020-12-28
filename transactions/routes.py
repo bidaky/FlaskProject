@@ -152,8 +152,8 @@ def deleteUser(email):
 @check_for_token
 def addnewWallet(userId):
     formCopy = json.loads(json.dumps(request.form))
-    if User.query.filter_by(id=userId).first() is None:
-        abort(404, 'User with that id not found')
+    # if User.query.filter_by(id=userId).first() is None:
+    #     abort(404, 'User with that id not found')
     try:
         new = Wallet(user_id=userId, sum_of_money=formCopy['sum_of_money'])
         temp = wallet_schema.dump(new)

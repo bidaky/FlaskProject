@@ -3,6 +3,15 @@ from datetime import datetime
 from marshmallow import Schema, fields, validate, ValidationError
 
 
+def validate_quantity(sum_of_money):
+    if sum_of_money < 0:
+        raise ValidationError("must be greater than 0")
+
+
+class ItemSchema(Schema):
+    quantity = fields.Integer(validate=validate_quantity)
+
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     firstname = db.Column(db.String(50), nullable=False)
@@ -37,7 +46,7 @@ class Wallet(db.Model):
 
 class WalletSchema(ma.Schema):
     id = fields.Integer(allow_none=True)
-    sum_of_money = fields.Integer(allow_none=False)
+    sum_of_money = fields.Integer(allow_none=False, validate=validate_quantity)
     user_id = fields.Integer(allow_none=False)
 
     class Meta:

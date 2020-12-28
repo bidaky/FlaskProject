@@ -120,7 +120,21 @@ class BasicTests(unittest.TestCase):
         response = self._app.post('/wallets/4',
                                   headers={"Content-Type": "multipart/form-data", "token": self.bytes_to_json_token},
                                   data={"sum_of_money": 111})
-        self.assertEqual(201 if u is not None else 404, response.status_code)
+        self.assertEqual(201, response.status_code)
+
+    def test_create_wallet_invalid_user(self):
+        self.test_auth()
+        response = self._app.post('/wallets/999',
+                                  headers={"Content-Type": "multipart/form-data", "token": self.bytes_to_json_token},
+                                  data={"sum_of_money": 111})
+        self.assertEqual(403, response.status_code)
+
+    def test_create_wallet_negative_sum(self):
+        self.test_auth()
+        response = self._app.post('/wallets/4',
+                                  headers={"Content-Type": "multipart/form-data", "token": self.bytes_to_json_token},
+                                  data={"sum_of_money": -999})
+        self.assertEqual(405, response.status_code)
 
     def test_create_wallet_wrong_data(self):
         self.test_auth()
